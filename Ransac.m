@@ -1,8 +1,8 @@
 function [x1_curr, x2_curr, T] = Ransac(x1, x2)
 
-numIter = 200;
+numIter = 2000;
 best = 0;
-thresh = 50;
+thresh = 49;
 
 % Run RANSAC for required number of iterations
 for i=1:numIter
@@ -70,4 +70,5 @@ q = 1;
   [~,~,H_curr] = svd(A_curr);
   H_curr = reshape(H_curr(:,end),3,3);
   %make homography projective
-  T = maketform('projective',H_curr);
+  %T = maketform('projective',H_curr);
+  T = H_curr;

@@ -78,6 +78,8 @@ function [x1, x2] = Process(im1, im2)
     fourth = K * horzcat(U*W'*V', -u3);
     
     P1 = horzcat(K, zeros(3,1));
+    P2 = first;
+    A = [ P1(3,:) * sift_r1(1,1) - P1(1,:); P1(3,:) * sift_r1(1,2) - P1(2,:); P2(3,:) * sift_r2(1,1) - P2(1,:); P2(3,:) * sift_r2(1,2) - P2(2,:)];
     
     %Run Harris corner detector on two images and then Ransac on the two
     %corner matrices (default method is Harris_

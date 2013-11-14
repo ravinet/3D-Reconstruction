@@ -96,7 +96,11 @@ function [x1, x2] = Process(im1, im2)
     [~,~,V_third] = svd(A_third);
     [~,~,V_fourth] = svd(A_fourth);
     
-    
+    % get last column of Vs and normalize
+    last_col_first = V_first(:,end)/V_first(end,end);
+    last_col_second = V_second(:,end)/V_second(end,end);
+    last_col_third = V_third(:,end)/V_third(end,end);
+    last_col_fourth = V_fourth(:,end)/V_fourth(end,end);
     %Run Harris corner detector on two images and then Ransac on the two
     %corner matrices (default method is Harris_
     c1 = corner(I1);

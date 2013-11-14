@@ -111,7 +111,10 @@ function [x1, x2] = Process(im1, im2)
     scene_points_third = [scene_points_third(1,:)',scene_points_third(2,:)',scene_points_third(3,:)',scene_points_third(4,:)'];
     scene_points_fourth = [scene_points_fourth(1,:)',scene_points_fourth(2,:)',scene_points_fourth(3,:)',scene_points_fourth(4,:)'];
     [x_grid, y_grid] = meshgrid(1:size(im1,2), 1:size(im1,1));
-    
+    z_i = griddata(scene_points_first(:,1), scene_points_first(:,2), scene_points_first(:,3), x_grid, y_grid, 'cubic');
+    figure;
+    warp(x_grid, y_grid, z_i, im1(:,:,1));
+    view([0,90]);
     %Run Harris corner detector on two images and then Ransac on the two
     %corner matrices (default method is Harris_
     c1 = corner(I1);

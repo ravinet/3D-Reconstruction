@@ -17,7 +17,7 @@ function [x1, x2] = Process(im1, im2)
 
     x1 = frames1(1:2,matches(1,:));
     x2 = frames2(1:2,matches(2,:));
-
+    
     x1 = [x1(1,:)', x1(2,:)'];
     x2 = [x2(1,:)', x2(2,:)'];
     
@@ -26,7 +26,7 @@ function [x1, x2] = Process(im1, im2)
     
     % Estimate fundamental matrix
     F = estimateFundamentalMatrix(sift_r1,sift_r2);
-    Ftest = estimateFundamentalMatrix(x1,x2,'Method', 'RANSAC', 'NumTrials', 2000, 'DistanceThreshold', 0.49) 
+    Ftest = estimateFundamentalMatrix(x1,x2,'Method', 'RANSAC', 'NumTrials', 2000, 'DistanceThreshold', 0.49); 
     
     %Set intrinsic camera matrix
     K = [1138.81, 0, 535.107; 0, 1159.81, 298.384; 0, 0, 1];
@@ -72,35 +72,46 @@ function [x1, x2] = Process(im1, im2)
     
     %Possible R/t for second image project matrix (P2)
     u3 = U(:, 3);
-    first = K * horzcat(U*W*V', u3);
-    second = K * horzcat(U*W*V', -u3);
-    third = K * horzcat(U*W'*V', u3);
-    fourth = K * horzcat(U*W'*V', -u3);
+    first = K * [U*W*V', u3];
+    second = K * [U*W*V', -u3];
+    third = K * [U*W'*V', u3];
+    fourth = K * [U*W'*V', -u3];
     
-    P1 = horzcat(K, zeros(3,1));    
+    P1 = [K, zeros(3,1)];    
 
-    A_first = [ P1(3,:) * sift_r1(1,1) - P1(1,:); P1(3,:) * sift_r1(1,2) - P1(2,:); first(3,:) * sift_r2(1,1) - first(1,:); first(3,:) * sift_r2(1,2) - first(2,:)];
-    A_second = [ P1(3,:) * sift_r1(1,1) - P1(1,:); P1(3,:) * sift_r1(1,2) - P1(2,:); second(3,:) * sift_r2(1,1) - second(1,:); second(3,:) * sift_r2(1,2) - second(2,:)];
-    A_third = [ P1(3,:) * sift_r1(1,1) - P1(1,:); P1(3,:) * sift_r1(1,2) - P1(2,:); third(3,:) * sift_r2(1,1) - third(1,:); third(3,:) * sift_r2(1,2) - third(2,:)];
-    A_fourth = [ P1(3,:) * sift_r1(1,1) - P1(1,:); P1(3,:) * sift_r1(1,2) - P1(2,:); fourth(3,:) * sift_r2(1,1) - fourth(1,:); fourth(3,:) * sift_r2(1,2) - fourth(2,:)];
-
-    for j = 2:size(sift_r1,1)
-        A_first = [A_first;[ P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); first(3,:) * sift_r2(j,1) - first(1,:); first(3,:) * sift_r2(j,2) - first(2,:)]];
-        A_second = [A_second;[ P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); second(3,:) * sift_r2(j,1) - second(1,:); second(3,:) * sift_r2(j,2) - second(2,:)]];
-        A_third = [A_third;[ P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); third(3,:) * sift_r2(j,1) - third(1,:); third(3,:) * sift_r2(j,2) - third(2,:)]];
-        A_fourth = [A_fourth;[ P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); fourth(3,:) * sift_r2(j,1) - fourth(1,:); fourth(3,:) * sift_r2(j,2) - fourth(2,:)]];
+    scene_points_first = [];
+    scene_points_second = [];
+    scene_points_third = [];
+    scene_points_fourth = [];
+    for j = 1:size(sift_r1,1)
+        A_first = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); first(3,:) * sift_r2(j,1) - first(1,:); first(3,:) * sift_r2(j,2) - first(2,:)];
+        A_second = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); second(3,:) * sift_r2(j,1) - second(1,:); second(3,:) * sift_r2(j,2) - second(2,:)];
+        A_third = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); third(3,:) * sift_r2(j,1) - third(1,:); third(3,:) * sift_r2(j,2) - third(2,:)];
+        A_fourth = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); fourth(3,:) * sift_r2(j,1) - fourth(1,:); fourth(3,:) * sift_r2(j,2) - fourth(2,:)];
+        
+        [~,~,V_first] = svd(A_first);
+        [~,~,V_second] = svd(A_second);
+        [~,~,V_third] = svd(A_third);
+        [~,~,V_fourth] = svd(A_fourth);
+    
+        % get last column of Vs and normalize
+        last_col_first = V_first(:,end)/V_first(end,end);
+        last_col_second = V_second(:,end)/V_second(end,end);
+        last_col_third = V_third(:,end)/V_third(end,end);
+        last_col_fourth = V_fourth(:,end)/V_fourth(end,end);
+        
+        scene_points_first = [scene_points_first, last_col_first];
+        scene_points_second = [scene_points_second, last_col_second];
+        scene_points_third = [scene_points_third, last_col_third];
+        scene_points_fourth = [scene_points_fourth, last_col_fourth];
     end
     
-    [~,~,V_first] = svd(A_first);
-    [~,~,V_second] = svd(A_second);
-    [~,~,V_third] = svd(A_third);
-    [~,~,V_fourth] = svd(A_fourth);
+    scene_points_first = [scene_points_first(1,:)',scene_points_first(2,:)',scene_points_first(3,:)',scene_points_first(4,:)'];
+    scene_points_second = [scene_points_second(1,:)',scene_points_second(2,:)',scene_points_second(3,:)',scene_points_second(4,:)'];
+    scene_points_third = [scene_points_third(1,:)',scene_points_third(2,:)',scene_points_third(3,:)',scene_points_third(4,:)'];
+    scene_points_fourth = [scene_points_fourth(1,:)',scene_points_fourth(2,:)',scene_points_fourth(3,:)',scene_points_fourth(4,:)'];
+    [x_grid, y_grid] = meshgrid(1:size(im1,2), 1:size(im1,1));
     
-    % get last column of Vs and normalize
-    last_col_first = V_first(:,end)/V_first(end,end);
-    last_col_second = V_second(:,end)/V_second(end,end);
-    last_col_third = V_third(:,end)/V_third(end,end);
-    last_col_fourth = V_fourth(:,end)/V_fourth(end,end);
     %Run Harris corner detector on two images and then Ransac on the two
     %corner matrices (default method is Harris_
     c1 = corner(I1);

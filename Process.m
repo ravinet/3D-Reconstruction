@@ -77,9 +77,25 @@ function [x1, x2] = Process(im1, im2)
     third = K * horzcat(U*W'*V', u3);
     fourth = K * horzcat(U*W'*V', -u3);
     
-    P1 = horzcat(K, zeros(3,1));
-    P2 = first;
-    A = [ P1(3,:) * sift_r1(1,1) - P1(1,:); P1(3,:) * sift_r1(1,2) - P1(2,:); P2(3,:) * sift_r2(1,1) - P2(1,:); P2(3,:) * sift_r2(1,2) - P2(2,:)];
+    P1 = horzcat(K, zeros(3,1));    
+
+    A_first = [ P1(3,:) * sift_r1(1,1) - P1(1,:); P1(3,:) * sift_r1(1,2) - P1(2,:); first(3,:) * sift_r2(1,1) - first(1,:); first(3,:) * sift_r2(1,2) - first(2,:)];
+    A_second = [ P1(3,:) * sift_r1(1,1) - P1(1,:); P1(3,:) * sift_r1(1,2) - P1(2,:); second(3,:) * sift_r2(1,1) - second(1,:); second(3,:) * sift_r2(1,2) - second(2,:)];
+    A_third = [ P1(3,:) * sift_r1(1,1) - P1(1,:); P1(3,:) * sift_r1(1,2) - P1(2,:); third(3,:) * sift_r2(1,1) - third(1,:); third(3,:) * sift_r2(1,2) - third(2,:)];
+    A_fourth = [ P1(3,:) * sift_r1(1,1) - P1(1,:); P1(3,:) * sift_r1(1,2) - P1(2,:); fourth(3,:) * sift_r2(1,1) - fourth(1,:); fourth(3,:) * sift_r2(1,2) - fourth(2,:)];
+
+    for j = 2:size(sift_r1,1)
+        A_first = [A_first;[ P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); first(3,:) * sift_r2(j,1) - first(1,:); first(3,:) * sift_r2(j,2) - first(2,:)]];
+        A_second = [A_second;[ P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); second(3,:) * sift_r2(j,1) - second(1,:); second(3,:) * sift_r2(j,2) - second(2,:)]];
+        A_third = [A_third;[ P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); third(3,:) * sift_r2(j,1) - third(1,:); third(3,:) * sift_r2(j,2) - third(2,:)]];
+        A_fourth = [A_fourth;[ P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); fourth(3,:) * sift_r2(j,1) - fourth(1,:); fourth(3,:) * sift_r2(j,2) - fourth(2,:)]];
+    end
+    
+    [~,~,V_first] = svd(A_first);
+    [~,~,V_second] = svd(A_second);
+    [~,~,V_third] = svd(A_third);
+    [~,~,V_fourth] = svd(A_fourth);
+    
     
     %Run Harris corner detector on two images and then Ransac on the two
     %corner matrices (default method is Harris_

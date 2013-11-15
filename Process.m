@@ -4,7 +4,7 @@ function [x1, x2] = Process(im1, im2)
     %im1 = double(im1); im2 = double(im1);
     im1 = imread(im1); im2 = imread(im2);
     im1 = rgb2gray(im1); im2 = rgb2gray(im2);
-    im1 = double(im1)/246; im2 = double(im2)/248;
+    im1 = double(im1)/246; im2 = double(im2)/246;
     I1 = im1; I2 = im2;
     [frames1,descr1,gss1,dogss1] = sift( I1, 'Verbosity', 1 ) ;
     [frames2,descr2,gss2,dogss2] = sift( I2, 'Verbosity', 1 ) ;
@@ -24,7 +24,7 @@ function [x1, x2] = Process(im1, im2)
     x2 = [x2(1,:)', x2(2,:)'];
     
     % Run RANSAC
-    [sift_r1, sift_r2, H] = Ransac(x1, x2);
+    %[sift_r1, sift_r2, H] = Ransac(x1, x2);
     
     % Estimate fundamental matrix
     %F = estimateFundamentalMatrix(sift_r1,sift_r2);
@@ -115,7 +115,9 @@ function [x1, x2] = Process(im1, im2)
     scene_points_second = [scene_points_second(1,:)',scene_points_second(2,:)',scene_points_second(3,:)',scene_points_second(4,:)'];
     scene_points_third = [scene_points_third(1,:)',scene_points_third(2,:)',scene_points_third(3,:)',scene_points_third(4,:)'];
     scene_points_fourth = [scene_points_fourth(1,:)',scene_points_fourth(2,:)',scene_points_fourth(3,:)',scene_points_fourth(4,:)'];
+    
     [x_grid, y_grid] = meshgrid(1:size(im1,2), 1:size(im1,1));
+    
     scene_points_first = scene_points_first * 246;
     scene_points_second = scene_points_second * 246;
     scene_points_third = scene_points_third * 246;

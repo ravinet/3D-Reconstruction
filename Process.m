@@ -122,7 +122,40 @@ function [x1, x2] = Process(im1, im2)
     scene_points_second = scene_points_second * 246;
     scene_points_third = scene_points_third * 246;
     scene_points_fourth = scene_points_fourth * 246;
-    z_i = griddata(scene_points_first(:,1), scene_points_first(:,2), scene_points_first(:,3), x_grid, y_grid, 'cubic');
+    
+    num_neg_first = sum(scene_points_first(:,3) < 0);
+    num_neg_second = sum(scene_points_second(:,3) < 0);
+    num_neg_third = sum(scene_points_third(:,3) < 0);
+    num_neg_fourth = sum(scene_points_fourth(:,3) < 0);
+    
+    if ( num_neg_first <= num_neg_second )
+        if ( num_neg_third <= num_neg_fourth )
+            scene_points_1 = scene_points_first;
+            scene_points_2 = scene_points_third;
+        else
+            scene_points_1 = scene_points_first;
+            scene_points_2 = scene_points_fourth;
+        end
+    elseif ( num_neg_second <= num_neg_first )
+        if ( num_neg_third <= num_neg_fourth )
+            scene_points_1 = scene_points_second;
+            scene_points_2 = scene_points_third;
+        else
+            scene_points_1 = scene_points_second;
+            scene_points_2 = scene_points_fourth;
+        end
+    end
+    
+    range_first = sqrt((max(scene_points_1(:,1)) - min(scene_points_1(:,1))^2) + (max(scene_points_1(:,2)) - min(scene_points_1(:,2))^2));
+    range_second = sqrt((max(scene_points_2(:,1)) - min(scene_points_2(:,1))^2) + (max(scene_points_2(:,2)) - min(scene_points_2(:,2))^2));
+    
+    if ( range_first > range_second )
+        scene_points = scene_points_1;
+    else
+        scene_points = scene_points_2;
+    end
+    
+    z_i = griddata(scene_points(:,1), scene_points(:,2), scene_points(:,3), x_grid, y_grid, 'cubic');
     figure;
     warp(x_grid, y_grid, z_i, im1(:,:,1));
     view([0,90]);

@@ -7,7 +7,7 @@ thresh = 49;
 % Run RANSAC for required number of iterations
 for i=1:numIter
   % Select a subset of points (4)
-  samples = randi([1 size(x1, 1)], 4, 1);
+  samples = randi([1 size(x1, 1)], 8, 1);
   x1_points = x1(samples, :);
   x2_points = x2(samples, :);
 

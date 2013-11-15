@@ -3,7 +3,9 @@ function [x1, x2] = Process(im1, im2)
     % Compute and match SIFT descriptors (modified from sift_demo.m)
     %im1 = double(im1); im2 = double(im1);
     im1 = imread(im1); im2 = imread(im2);
-    I1 = rgb2gray(im1); I2 = rgb2gray(im2);
+    im1 = rgb2gray(im1); im2 = rgb2gray(im2);
+    im1 = double(im1)/246; im2 = double(im2)/248;
+    I1 = im1; I2 = im2;
     [frames1,descr1,gss1,dogss1] = sift( I1, 'Verbosity', 1 ) ;
     [frames2,descr2,gss2,dogss2] = sift( I2, 'Verbosity', 1 ) ;
 
@@ -25,11 +27,14 @@ function [x1, x2] = Process(im1, im2)
     [sift_r1, sift_r2, H] = Ransac(x1, x2);
     
     % Estimate fundamental matrix
-    F = estimateFundamentalMatrix(sift_r1,sift_r2);
-    Ftest = estimateFundamentalMatrix(x1,x2,'Method', 'RANSAC', 'NumTrials', 2000, 'DistanceThreshold', 0.49); 
+    %F = estimateFundamentalMatrix(sift_r1,sift_r2);
+    F = estimateFundamentalMatrix(x1,x2,'Method', 'RANSAC', 'NumTrials', 200, 'DistanceThreshold', 75); 
+    sift_r1 = x1;
+    sift_r2 = x2;
     
     %Set intrinsic camera matrix
-    K = [1138.81, 0, 535.107; 0, 1159.81, 298.384; 0, 0, 1];
+    %K = [1138.81, 0, 535.107; 0, 1159.81, 298.384; 0, 0, 1];
+    K = [832.85, 0.1401, 304.18; 0, 832.90, 206.76; 0, 0, 1];
     
     
     %Essential Matrix
@@ -111,6 +116,10 @@ function [x1, x2] = Process(im1, im2)
     scene_points_third = [scene_points_third(1,:)',scene_points_third(2,:)',scene_points_third(3,:)',scene_points_third(4,:)'];
     scene_points_fourth = [scene_points_fourth(1,:)',scene_points_fourth(2,:)',scene_points_fourth(3,:)',scene_points_fourth(4,:)'];
     [x_grid, y_grid] = meshgrid(1:size(im1,2), 1:size(im1,1));
+    scene_points_first = scene_points_first * 246;
+    scene_points_second = scene_points_second * 246;
+    scene_points_third = scene_points_third * 246;
+    scene_points_fourth = scene_points_fourth * 246;
     z_i = griddata(scene_points_first(:,1), scene_points_first(:,2), scene_points_first(:,3), x_grid, y_grid, 'cubic');
     figure;
     warp(x_grid, y_grid, z_i, im1(:,:,1));

@@ -23,6 +23,17 @@ function [x1, x2] = Process(im1, im2)
     x1 = [x1(1,:)', x1(2,:)'];
     x2 = [x2(1,:)', x2(2,:)'];
     
+    %Run Harris corner detector on two images and then Ransac on the two
+    %corner matrices (default method is Harris_
+    c1 = corner(I1);
+    c2 = corner(I2);
+
+    %Run RANSAC on corner matrices
+    [corner_inliers1, corner_inliers2] = Ransac(c1, c2);
+    
+    x1 = [x1; corner_inliers1];
+    x2 = [x2; corner_inliers2];
+    
     % Run RANSAC
     %[sift_r1, sift_r2, H] = Ransac(x1, x2);
     
@@ -158,10 +169,3 @@ function [x1, x2] = Process(im1, im2)
     figure;
     warp(x_grid, y_grid, z_i, im1(:,:,1));
     view([0,90]);
-    %Run Harris corner detector on two images and then Ransac on the two
-    %corner matrices (default method is Harris_
-    c1 = corner(I1);
-    c2 = corner(I2);
-
-    %Run RANSAC on corner matrices
-    [corner_inliers1, corner_inliers2] = Ransac(c1, c2);

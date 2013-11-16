@@ -28,10 +28,9 @@ function [x1, x2] = Process(im1, im2)
     
     % Estimate fundamental matrix
     %F = estimateFundamentalMatrix(sift_r1,sift_r2);
-    F = estimateFundamentalMatrix(x1,x2,'Method', 'RANSAC', 'NumTrials', 200, 'DistanceThreshold', 75); 
+    F = estimateFundamentalMatrix(x1,x2,'Method', 'RANSAC', 'NumTrials', 200, 'DistanceThreshold', 10); 
     sift_r1 = x1;
     sift_r2 = x2;
-    
     %Set intrinsic camera matrix
     %K = [1138.81, 0, 535.107; 0, 1159.81, 298.384; 0, 0, 1];
     K = [832.85, 0.1401, 304.18; 0, 832.90, 206.76; 0, 0, 1];

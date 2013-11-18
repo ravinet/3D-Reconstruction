@@ -103,10 +103,45 @@ function [x1, x2] = Process(im1, im2)
         %A_second = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); second(3,:) * sift_r2(j,1) - second(1,:); second(3,:) * sift_r2(j,2) - second(2,:)];
         %A_third = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); third(3,:) * sift_r2(j,1) - third(1,:); third(3,:) * sift_r2(j,2) - third(2,:)];
         %A_fourth = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); fourth(3,:) * sift_r2(j,1) - fourth(1,:); fourth(3,:) * sift_r2(j,2) - fourth(2,:)];
-        A_first = [sift_r1(j,1)*P1(3,:)' - P1(1,:)', sift_r1(j,2)*P1(3,:)' - P1(2,:)', sift_r2(j,1)*first(3,:)' - first(1,:)', sift_r2(j,2)* first(3,:)' - first(2,:)'];
-        A_second = [sift_r1(j,1)*P1(3,:)' - P1(1,:)', sift_r1(j,2)*P1(3,:)' - P1(2,:)', sift_r2(j,1)*second(3,:)' - second(1,:)', sift_r2(j,2)*second(3,:)' - second(2,:)'];
-        A_third = [sift_r1(j,1)*P1(3,:)' - P1(1,:)', sift_r1(j,2)*P1(3,:)' - P1(2,:)', sift_r2(j,1)*third(3,:)' - third(1,:)', sift_r2(j,2)*third(3,:)' - third(2,:)'];
-        A_fourth = [sift_r1(j,1)*P1(3,:)' - P1(1,:)', sift_r1(j,2)*P1(3,:)' - P1(2,:)', sift_r2(j,1)*fourth(3,:)' - fourth(1,:)', sift_r2(j,2)*fourth(3,:)' - fourth(2,:)'];
+        A_first = [sift_r1(j,1)*P1(3,:) - P1(1,:); 
+                   sift_r1(j,2)*P1(3,:) - P1(2,:); 
+                   sift_r2(j,1)*first(3,:) - first(1,:); 
+                   sift_r2(j,2)* first(3,:) - first(2,:)];
+               
+        A_second = [sift_r1(j,1)*P1(3,:) - P1(1,:); 
+                    sift_r1(j,2)*P1(3,:) - P1(2,:); 
+                    sift_r2(j,1)*second(3,:) - second(1,:); 
+                    sift_r2(j,2)*second(3,:) - second(2,:)];
+                
+        A_third = [sift_r1(j,1)*P1(3,:) - P1(1,:); 
+                   sift_r1(j,2)*P1(3,:) - P1(2,:); 
+                   sift_r2(j,1)*third(3,:) - third(1,:); 
+                   sift_r2(j,2)*third(3,:) - third(2,:)];
+               
+        A_fourth = [sift_r1(j,1)*P1(3,:) - P1(1,:); 
+                    sift_r1(j,2)*P1(3,:) - P1(2,:); 
+                    sift_r2(j,1)*fourth(3,:) - fourth(1,:); 
+                    sift_r2(j,2)*fourth(3,:) - fourth(2,:)];
+        
+        A_first(1,:) = A_first(1,:)/norm(A_first(1,:));
+        A_first(2,:) = A_first(2,:)/norm(A_first(2,:));
+        A_first(3,:) = A_first(3,:)/norm(A_first(3,:));
+        A_first(4,:) = A_first(4,:)/norm(A_first(4,:));
+        
+        A_second(1,:) = A_second(1,:)/norm(A_second(1,:));
+        A_second(2,:) = A_second(2,:)/norm(A_second(2,:));
+        A_second(3,:) = A_second(3,:)/norm(A_second(3,:));
+        A_second(4,:) = A_second(4,:)/norm(A_second(4,:));
+        
+        A_third(1,:) = A_third(1,:)/norm(A_third(1,:));
+        A_third(2,:) = A_third(2,:)/norm(A_third(2,:));
+        A_third(3,:) = A_third(3,:)/norm(A_third(3,:));
+        A_third(4,:) = A_third(4,:)/norm(A_third(4,:));
+        
+        A_fourth(1,:) = A_fourth(1,:)/norm(A_fourth(1,:));
+        A_fourth(2,:) = A_fourth(2,:)/norm(A_fourth(2,:));
+        A_fourth(3,:) = A_fourth(3,:)/norm(A_fourth(3,:));
+        A_fourth(4,:) = A_fourth(4,:)/norm(A_fourth(4,:));
         
         [~,~,V_first] = svd(A_first);
         [~,~,V_second] = svd(A_second);
@@ -132,10 +167,10 @@ function [x1, x2] = Process(im1, im2)
     
     [x_grid, y_grid] = meshgrid(1:size(im1,2), 1:size(im1,1));
     
-    scene_points_first = scene_points_first * 246;
-    scene_points_second = scene_points_second * 246;
-    scene_points_third = scene_points_third * 246;
-    scene_points_fourth = scene_points_fourth * 246;
+    %scene_points_first = scene_points_first * 246;
+    %scene_points_second = scene_points_second * 246;
+    %scene_points_third = scene_points_third * 246;
+    %scene_points_fourth = scene_points_fourth * 246;
     
     % test if reconstructed points are in front of both cameras
     first_test_p1 = P1*scene_points_first(1,:)';
@@ -148,15 +183,16 @@ function [x1, x2] = Process(im1, im2)
     fourth_test_p2 = fourth*scene_points_fourth(1,:)';
     
     if first_test_p1(3) > 0 && first_test_p2(3) > 0
-        scene_points = scene_points_first;
+        scene_points = P1*scene_points_first';
     elseif second_test_p1(3) > 0 && second_test_p2(3) > 0
-        scene_points = scene_points_second;
+        scene_points = P1*scene_points_second';
     elseif third_test_p1(3) > 0 && third_test_p2(3) > 0
-        scene_points = scene_points_third;
+        scene_points = P1*scene_points_third';
     else
-        scene_points = scene_points_fourth;
+        scene_points = P1*scene_points_fourth';
     end
     
+    scene_points = scene_points';
     % reconstruct the image
     z_i = griddata(scene_points(:,1), scene_points(:,2), scene_points(:,3), x_grid, y_grid, 'cubic');
     figure;

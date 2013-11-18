@@ -28,7 +28,7 @@ function [x1, x2] = Process(im1, im2)
     
     % Estimate fundamental matrix
     %F = estimateFundamentalMatrix(sift_r1,sift_r2);
-    F = estimateFundamentalMatrix(x1,x2,'Method', 'RANSAC', 'NumTrials', 200, 'DistanceThreshold', 10); 
+    F = estimateFundamentalMatrix(x1,x2,'Method', 'RANSAC', 'NumTrials', 200, 'DistanceThreshold', 0.49); 
     sift_r1 = x1;
     sift_r2 = x2;
     %Set intrinsic camera matrix
@@ -88,10 +88,14 @@ function [x1, x2] = Process(im1, im2)
     scene_points_third = [];
     scene_points_fourth = [];
     for j = 1:size(sift_r1,1)
-        A_first = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); first(3,:) * sift_r2(j,1) - first(1,:); first(3,:) * sift_r2(j,2) - first(2,:)];
-        A_second = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); second(3,:) * sift_r2(j,1) - second(1,:); second(3,:) * sift_r2(j,2) - second(2,:)];
-        A_third = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); third(3,:) * sift_r2(j,1) - third(1,:); third(3,:) * sift_r2(j,2) - third(2,:)];
-        A_fourth = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); fourth(3,:) * sift_r2(j,1) - fourth(1,:); fourth(3,:) * sift_r2(j,2) - fourth(2,:)];
+        %A_first = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); first(3,:) * sift_r2(j,1) - first(1,:); first(3,:) * sift_r2(j,2) - first(2,:)];
+        %A_second = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); second(3,:) * sift_r2(j,1) - second(1,:); second(3,:) * sift_r2(j,2) - second(2,:)];
+        %A_third = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); third(3,:) * sift_r2(j,1) - third(1,:); third(3,:) * sift_r2(j,2) - third(2,:)];
+        %A_fourth = [P1(3,:) * sift_r1(j,1) - P1(1,:); P1(3,:) * sift_r1(j,2) - P1(2,:); fourth(3,:) * sift_r2(j,1) - fourth(1,:); fourth(3,:) * sift_r2(j,2) - fourth(2,:)];
+        A_first = [sift_r1(j,1)*P1(3,:)' - P1(1,:)', sift_r1(j,2)*P1(3,:)' - P1(2,:)', sift_r2(j,1)*first(3,:)' - first(1,:)', sift_r2(j,2)* first(3,:)' - first(2,:)'];
+        A_second = [sift_r1(j,1)*P1(3,:)' - P1(1,:)', sift_r1(j,2)*P1(3,:)' - P1(2,:)', sift_r2(j,1)*second(3,:)' - second(1,:)', sift_r2(j,2)*second(3,:)' - second(2,:)'];
+        A_third = [sift_r1(j,1)*P1(3,:)' - P1(1,:)', sift_r1(j,2)*P1(3,:)' - P1(2,:)', sift_r2(j,1)*third(3,:)' - third(1,:)', sift_r2(j,2)*third(3,:)' - third(2,:)'];
+        A_fourth = [sift_r1(j,1)*P1(3,:)' - P1(1,:)', sift_r1(j,2)*P1(3,:)' - P1(2,:)', sift_r2(j,1)*fourth(3,:)' - fourth(1,:)', sift_r2(j,2)*fourth(3,:)' - fourth(2,:)'];
         
         [~,~,V_first] = svd(A_first);
         [~,~,V_second] = svd(A_second);
@@ -122,42 +126,32 @@ function [x1, x2] = Process(im1, im2)
     scene_points_third = scene_points_third * 246;
     scene_points_fourth = scene_points_fourth * 246;
     
-    num_neg_first = sum(scene_points_first(:,3) < 0);
-    num_neg_second = sum(scene_points_second(:,3) < 0);
-    num_neg_third = sum(scene_points_third(:,3) < 0);
-    num_neg_fourth = sum(scene_points_fourth(:,3) < 0);
+    % test if reconstructed points are in front of both cameras
+    first_test_p1 = P1*scene_points_first(1,:)';
+    second_test_p1 = P1*scene_points_second(1,:)';
+    third_test_p1 = P1*scene_points_third(1,:)';
+    fourth_test_p1 = P1*scene_points_fourth(1,:)';
+    first_test_p2 = first*scene_points_first(1,:)';
+    second_test_p2 = second*scene_points_second(1,:)';
+    third_test_p2 = third*scene_points_third(1,:)';
+    fourth_test_p2 = fourth*scene_points_fourth(1,:)';
     
-    if ( num_neg_first <= num_neg_second )
-        if ( num_neg_third <= num_neg_fourth )
-            scene_points_1 = scene_points_first;
-            scene_points_2 = scene_points_third;
-        else
-            scene_points_1 = scene_points_first;
-            scene_points_2 = scene_points_fourth;
-        end
-    elseif ( num_neg_second <= num_neg_first )
-        if ( num_neg_third <= num_neg_fourth )
-            scene_points_1 = scene_points_second;
-            scene_points_2 = scene_points_third;
-        else
-            scene_points_1 = scene_points_second;
-            scene_points_2 = scene_points_fourth;
-        end
-    end
-    
-    range_first = sqrt((max(scene_points_1(:,1)) - min(scene_points_1(:,1))^2) + (max(scene_points_1(:,2)) - min(scene_points_1(:,2))^2));
-    range_second = sqrt((max(scene_points_2(:,1)) - min(scene_points_2(:,1))^2) + (max(scene_points_2(:,2)) - min(scene_points_2(:,2))^2));
-    
-    if ( range_first > range_second )
-        scene_points = scene_points_1;
+    if first_test_p1(3) > 0 && first_test_p2(3) > 0
+        scene_points = scene_points_first;
+    elseif second_test_p1(3) > 0 && second_test_p2(3) > 0
+        scene_points = scene_points_second;
+    elseif third_test_p1(3) > 0 && third_test_p2(3) > 0
+        scene_points = scene_points_third;
     else
-        scene_points = scene_points_2;
+        scene_points = scene_points_fourth;
     end
     
+    % reconstruct the image
     z_i = griddata(scene_points(:,1), scene_points(:,2), scene_points(:,3), x_grid, y_grid, 'cubic');
     figure;
     warp(x_grid, y_grid, z_i, im1(:,:,1));
     view([0,90]);
+    
     %Run Harris corner detector on two images and then Ransac on the two
     %corner matrices (default method is Harris_
     c1 = corner(I1);

@@ -1,4 +1,6 @@
 function [square_x, square_y] = GetCoordinates(image)
 im = imread(image);
 imshow(im);
-[square_x, square_y] = ginput()
+format long g;
+[square_x, square_y] = ginput();
+[square_x, square_y]

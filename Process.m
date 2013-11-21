@@ -29,23 +29,23 @@ function [x1, x2] = Process(im1, im2)
     c2 = corner(I2);
 
     %Run RANSAC on corner matrices
-    [corner_inliers1, corner_inliers2] = Ransac(c1, c2);
+    %[corner_inliers1, corner_inliers2] = Ransac(c1, c2);
     
-    x1 = [x1; corner_inliers1];
-    x2 = [x2; corner_inliers2];
+    %x1 = [x1; corner_inliers1];
+    %x2 = [x2; corner_inliers2];
     
     % Run RANSAC
     %[sift_r1, sift_r2, H] = Ransac(x1, x2);
     
     % Estimate fundamental matrix
     %F = estimateFundamentalMatrix(sift_r1,sift_r2);
-    F = estimateFundamentalMatrix(x1,x2,'Method', 'RANSAC', 'NumTrials', 200, 'DistanceThreshold', 0.49); 
+    F = estimateFundamentalMatrix(x1,x2,'Method', 'RANSAC', 'NumTrials', 200, 'DistanceThreshold', 2); 
     sift_r1 = x1;
     sift_r2 = x2;
     %Set intrinsic camera matrix
     %K = [1138.81, 0, 535.107; 0, 1159.81, 298.384; 0, 0, 1];
-    K = [832.85, 0.1401, 304.18; 0, 832.90, 206.76; 0, 0, 1];
-    
+    %K = [832.85, 0.1401, 304.18; 0, 832.90, 206.76; 0, 0, 1];
+    K = [360.506, -38.7974, 128.692; 0, 470.953, 162.864; 0, 0, 1];
     
     %Essential Matrix
     E = K'*F*K;
@@ -123,25 +123,25 @@ function [x1, x2] = Process(im1, im2)
                     sift_r2(j,1)*fourth(3,:) - fourth(1,:); 
                     sift_r2(j,2)*fourth(3,:) - fourth(2,:)];
         
-        A_first(1,:) = A_first(1,:)/norm(A_first(1,:));
-        A_first(2,:) = A_first(2,:)/norm(A_first(2,:));
-        A_first(3,:) = A_first(3,:)/norm(A_first(3,:));
-        A_first(4,:) = A_first(4,:)/norm(A_first(4,:));
+        %A_first(1,:) = A_first(1,:)/norm(A_first(1,:));
+        %A_first(2,:) = A_first(2,:)/norm(A_first(2,:));
+        %A_first(3,:) = A_first(3,:)/norm(A_first(3,:));
+        %A_first(4,:) = A_first(4,:)/norm(A_first(4,:));
         
-        A_second(1,:) = A_second(1,:)/norm(A_second(1,:));
-        A_second(2,:) = A_second(2,:)/norm(A_second(2,:));
-        A_second(3,:) = A_second(3,:)/norm(A_second(3,:));
-        A_second(4,:) = A_second(4,:)/norm(A_second(4,:));
+        %A_second(1,:) = A_second(1,:)/norm(A_second(1,:));
+        %A_second(2,:) = A_second(2,:)/norm(A_second(2,:));
+        %A_second(3,:) = A_second(3,:)/norm(A_second(3,:));
+        %A_second(4,:) = A_second(4,:)/norm(A_second(4,:));
         
-        A_third(1,:) = A_third(1,:)/norm(A_third(1,:));
-        A_third(2,:) = A_third(2,:)/norm(A_third(2,:));
-        A_third(3,:) = A_third(3,:)/norm(A_third(3,:));
-        A_third(4,:) = A_third(4,:)/norm(A_third(4,:));
+        %A_third(1,:) = A_third(1,:)/norm(A_third(1,:));
+        %A_third(2,:) = A_third(2,:)/norm(A_third(2,:));
+        %A_third(3,:) = A_third(3,:)/norm(A_third(3,:));
+        %A_third(4,:) = A_third(4,:)/norm(A_third(4,:));
         
-        A_fourth(1,:) = A_fourth(1,:)/norm(A_fourth(1,:));
-        A_fourth(2,:) = A_fourth(2,:)/norm(A_fourth(2,:));
-        A_fourth(3,:) = A_fourth(3,:)/norm(A_fourth(3,:));
-        A_fourth(4,:) = A_fourth(4,:)/norm(A_fourth(4,:));
+        %A_fourth(1,:) = A_fourth(1,:)/norm(A_fourth(1,:));
+        %A_fourth(2,:) = A_fourth(2,:)/norm(A_fourth(2,:));
+        %A_fourth(3,:) = A_fourth(3,:)/norm(A_fourth(3,:));
+        %A_fourth(4,:) = A_fourth(4,:)/norm(A_fourth(4,:));
         
         [~,~,V_first] = svd(A_first);
         [~,~,V_second] = svd(A_second);
@@ -196,5 +196,5 @@ function [x1, x2] = Process(im1, im2)
     % reconstruct the image
     z_i = griddata(scene_points(:,1), scene_points(:,2), scene_points(:,3), x_grid, y_grid, 'cubic');
     figure;
-    warp(x_grid, y_grid, z_i, im1(:,:,1));
+    warp(x_grid, y_grid, abs(z_i), im1(:,:,1));
     view([0,90]);

@@ -3,4 +3,3 @@ im = imread(image);
 imshow(im);
 format long g;
 [square_x, square_y] = ginput();
-[square_x, square_y]

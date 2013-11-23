@@ -33,8 +33,8 @@ function [x1, x2] = Process(im1, im2)
     
     %x1 = [x1; corner_inliers1];
     %x2 = [x2; corner_inliers2];
-    %x1 = [x1; c1];
-    %x2 = [x2; c2];
+    x1 = [x1; c1];
+    x2 = [x2; c2];
     
     % Run RANSAC
     %[sift_r1, sift_r2, H] = Ransac(x1, x2);

@@ -4,7 +4,7 @@ In order to understand the purpose of the fundamental and essential matrix, we f
 
 \subsection{Epipolar Geometry}
 In our project, we take two uncalibrated pictures of the same object but from different views. Epipolar geometry gives us a relationship between these images.
-\begin{figure}[!H]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.9\linewidth]{figures/epipolar.pdf}
 \end{center}
@@ -30,5 +30,7 @@ The essential matrix gives us the extrinsic parameters of the two views. In othe
 E = K^TFK
 \end{equation}
 $F$ is the fundamental matrix and $K$ is the internal parameters of the camera.
+
+Theoretically, the essential matrix should have two equal non-zero eigenvalues and a zero eigenvalue. However, due to the noise in the data, this usually is not true in practice. In order to rectify this, we use Singular Value Decomposition (SVD)~\cite{svd} to capture the diagonal matrix with the eigenvalues. We set the smallest eigenvalue to 0 and set the other two eigenvalues as the average of each other. Then, with this diagonal matrix, we construct a new essential matrix.
 
 Now, we have all the tools to perform the 3D reconstruction.

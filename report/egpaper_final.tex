@@ -38,25 +38,25 @@
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-   The ABSTRACT is to be in fully-justified italicized text, at the top
-   of the left-hand column, below the author and affiliation
-   information. Use the word ``Abstract'' as the title, in 12-point
-   Times, boldface type, centered relative to the column, initially
-   capitalized. The abstract is to be in 10-point, single-spaced type.
-   Leave two blank lines after the Abstract, then begin the main text.
-   Look at previous CVPR abstracts to get a feel for style and length.
+In this report, we present a 3D reconstruction method that uses two uncalibrated images to construct the 
+final 3D object. It uses both SIFT and 
+Harris corners to provide a more representative modelling of the object. We found SIFT to 
+miss important features, which can be rectified using Harris corners. We use these feature points to
+calculate the fundamental matrix.  Moreover, rather than calibrating each image individually, we choose to calibrate the camera
+using Zhang's method so that the calibration only has to happen once. We show results from our experiments to show the effectiveness
+of this method.
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \input{intro}
 
-%\section{Related Work}
-%\input{related}
+\input{related}
 
 \input{overview}
 
-\section{Camera Calibration}
 \input{camera}
+
+\input{sift}
 
 \input{fundamental}
 

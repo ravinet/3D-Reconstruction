@@ -26,4 +26,33 @@ K =
 \end{equation*}
 
 \subsection{Reconstruction of Zhang's images}
-We first reconstructed the images provided by Zhang~\cite{Calibration} because we were provided with the pictures and internal parameters. 
+We first reconstructed the images provided by Zhang~\cite{Calibration} because we were provided with the pictures and internal parameters. This provides us with proof that our algorithm works with another camera other than our own. Similarly, we wanted to a baseline reconstruction to ensure that our camera calibration was mostly accurate. 
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{figures/TeaBox1.jpg}
+\includegraphics[width=0.45\linewidth]{figures/TeaBox2.jpg}
+\end{center}
+\caption{Original Zhang photos}
+\label{zhang_original}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{figures/nocorners.jpg}
+\includegraphics[width=0.45\linewidth]{figures/nocorners.jpg}
+\end{center}
+\caption{3D reconstruction without corners included as features.}
+\label{zhang_nocorners}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{figures/pic1.jpg}
+\includegraphics[width=0.45\linewidth]{figures/pic2.jpg}
+\includegraphics[width=0.45\linewidth]{figures/pic3.jpg}
+\includegraphics[width=0.45\linewidth]{figures/pic4.jpg}
+\end{center}
+\caption{Different views of 3D reconstructions with corners included as features.}
+\label{zhang_reconstructed}
+\end{figure}

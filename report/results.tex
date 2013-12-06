@@ -1,7 +1,7 @@
 \section{Results}
 \label{s:results}
 
-Here, we show some of our reconstructions as well as illustrate the implementation of our immediate steps, such as the SIFT matching points and Zhang's method. We used a Panasonic Lumix DMC-ZS5 camera to take pictures.
+Here, we show some of our reconstructions as well as illustrate the implementation of our immediate steps, such as the SIFT matching points and Zhang's method. We We used a Panasonic Lumix DMC-ZS5 camera to take pictures.
 
 \subsection{Camera Calibration}
 As stated above, we use Zhang's method to calibrate our camera. We use a sheet of paper with six 2" by 2" black boxes. Some pictures of the different angles used for the calibration are shown in Figure~\ref{calib_pics}. 
@@ -26,7 +26,7 @@ K =
 \end{equation*}
 
 \subsection{Reconstruction of Zhang's images}
-We first reconstructed the images provided by Zhang~\cite{Calibration} because we were provided with the pictures and internal parameters. This provides us with proof that our algorithm works with another camera other than our own. Similarly, we wanted to a baseline reconstruction to ensure that our camera calibration was mostly accurate. 
+We first reconstructed the images provided by Zhang~\cite{Calibration} because we were provided with the pictures and internal parameters. This provides us with proof that our algorithm works with another camera other than our own. Similarly, we wanted to a baseline reconstruction to ensure that our camera calibration was mostly accurate. Figure~\ref{zhang_original} show two original images from different views used for the reconstruction. Figure~\ref{zhang_nocorners} show views of the 3D reconstructed object without including the corners as features. We can see that the normals of the different planes are pretty well represented as the normals appear to be almost perpendicular to each other. Similarly, the edge of the box is also pretty well reflected in our reconstruction. However, we did not include the corners, which were not detected by SIFT, as a feature, so the box does not have the full rectangular shape. Figure~\ref{zhang_reconstructed} shows an improvement in the shape of the box when we included the corners as a feature.
 
 \begin{figure}[H]
 \begin{center}
@@ -39,8 +39,8 @@ We first reconstructed the images provided by Zhang~\cite{Calibration} because w
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.45\linewidth]{figures/nocorners.jpg}
-\includegraphics[width=0.45\linewidth]{figures/nocorners.jpg}
+\includegraphics[width=0.45\linewidth]{figures/nocorners1.jpg}
+\includegraphics[width=0.45\linewidth]{figures/nocorners2.jpg}
 \end{center}
 \caption{3D reconstruction without corners included as features.}
 \label{zhang_nocorners}

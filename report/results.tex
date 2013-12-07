@@ -56,3 +56,41 @@ We first reconstructed the images provided by Zhang~\cite{Calibration} because w
 \caption{Different views of 3D reconstructions with corners included as features.}
 \label{zhang_reconstructed}
 \end{figure}
+
+\subsection{Our Reconstructions}
+These are the reconstructions that we did with our own camera. Figure~\ref{original} has the original images, and Figure~\ref{sift_features} shows the matching points found by SIFT. Figure~\ref{kcup_nocorners} shows our reconstruction without including the corners as features. As we can see, like in the other reconstruction, the reconstruction is pretty representative of the object, but the shape is not very well preserved. However, with the addition of corners, the shape of the box becomes more representative of the actual object as seen in Figure~\ref{kcup_corners}. It is important to note that the reconstruction is not perfect because we only used two images, so we could only gather a limited number of information and constraints about the spatial points. This could be improved with more images and a more refined fundamental and essential matrix.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{figures/kcup1.jpg}
+\includegraphics[width=0.45\linewidth]{figures/kcup2.jpg}
+\end{center}
+\caption{Original Images}
+\label{original}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.95\linewidth]{figures/sift.jpg}
+\end{center}
+\caption{Matching points on images.}
+\label{sift_features}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{figures/kcup_nocorners1.jpg}
+\includegraphics[width=0.45\linewidth]{figures/kcup_nocorners2.jpg}
+\end{center}
+\caption{3D reconstruction without corners as features.}
+\label{kcup_nocorners}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{figures/kcup_corners1.jpg}
+\includegraphics[width=0.45\linewidth]{figures/kcup_corners2.jpg}
+\end{center}
+\caption{3D reconstruction with corners as features.}
+\label{kcup_corners}
+\end{figure}

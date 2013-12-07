@@ -23,7 +23,7 @@ E = USV^T, \; \text{suppose} \; W =
 
 There are two possible values for the rotation matrix: $R=UWV^T$ or $R=UW^TV^T$. There are also two possible values for the translation vector: $t = u_3$ or $t=-u_3$ where $u_3$ is the last column of $U$. Since $P_2 = K[R |t]$, we have four possible values for $P_2$. In order to pick the correct one, we calculate the 3D spatial coordinate for one pair of matching features. We then pick the $P_2$ such that the point is in front of both cameras. In our case, this means that the Z coordinate of the 3D coordinate is positive. 
 
-After we have the projective matrix for both images, we calculate the 3D spatial point $M = (X, Y, Z, 1)$ for each set of matching points $m = (u_1, v_1, 1)$ and $m' = (u_2, v_2, 1)$. Suppose $P_{1i}$ and $P_{2i}$ are the $i$th row vector of $P_1$ and $P_2$ respectively. To obtain the 3D spatial coordinate $M$, we have the following equation for each $m$, $m'$ pair:
+After we have the projective matrix for both images, we calculate the 3D spatial point $M = (X, Y, Z, 1)$ for each set of matching points $m = (u_1, v_1, 1)$ and $m' = (u_2, v_2, 1)$. Suppose $P_{1i}$ and $P_{2i}$ are the $i$th row vector of $P_1$ and $P_2$ respectively. To obtain the 3D spatial coordinate $M$, we have the following equation to do triangulation for each $m$, $m'$ pair:
 \begin{equation*}
   \left[ {\begin{array}{c}
    P_{13}u_1 - P_{11} \\

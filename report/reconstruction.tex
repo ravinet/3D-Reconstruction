@@ -4,14 +4,14 @@ Having all the necessary tools, we now reconstruct the 3D image. First, we descr
 \begin{equation}
 m = PM = K[R | t]M
 \end{equation}
-$K$ is the intrinsic parameters of the camera, $R$ is the rotation matrix, and $t$ is the translation matrix.
+where $K$ is the intrinsic parameters of the camera, $R$ is the rotation matrix, and $t$ is the translation matrix.
 
-We now need to create the projective matrices for each image. For simplicity, we set the first image to be our world coordinates, so our projective matrix is the following:
+We now need to create the projective matrices for each image. For simplicity, we set the first image to be the world coordinates, so our projective matrix is defined as:
 \begin{equation}
 P_1 = K[I | 0] = [K | 0]
 \end{equation}
 
-Now, we need to find the projective matrix for the second image $P_2$ relative to the world coordinates represented by $P_1$. More specifically, we need to find the rotation and translation matrix. Since we calibrated the camera using Zhang's method, this can be done using the essential matrix. We take the SVD of the essential matrix $E$ to decompose it and we suppose the following $W$:
+Now, we need to find the projective matrix for the second image $P_2$ relative to the world coordinates represented by $P_1$. More specifically, we need to find the rotation and translation matrix for this image, with respect to the first image. Since we calibrated the camera using Zhang's method, this can be done using the essential matrix. We take the SVD of the essential matrix $E$ to decompose it and we assume the following $W$:
 \begin{equation*}
 E = USV^T, \; \text{suppose} \; W =
   \left[ {\begin{array}{ccc}
@@ -23,7 +23,7 @@ E = USV^T, \; \text{suppose} \; W =
 
 There are two possible values for the rotation matrix: $R=UWV^T$ or $R=UW^TV^T$. There are also two possible values for the translation vector: $t = u_3$ or $t=-u_3$ where $u_3$ is the last column of $U$. Since $P_2 = K[R |t]$, we have four possible values for $P_2$. In order to pick the correct one, we calculate the 3D spatial coordinate for one pair of matching features. We then pick the $P_2$ such that the point is in front of both cameras. In our case, this means that the Z coordinate of the 3D coordinate is positive. 
 
-After we have the projective matrix for both images, we calculate the 3D spatial point $M = (X, Y, Z, 1)$ for each set of matching points $m = (u_1, v_1, 1)$ and $m' = (u_2, v_2, 1)$. Suppose $P_{1i}$ and $P_{2i}$ are the $i$th row vector of $P_1$ and $P_2$ respectively. To obtain the 3D spatial coordinate $M$, we have the following equation to do triangulation for each $m$, $m'$ pair:
+After we have the projective matrix for each image, we calculate the 3D spatial point $M = (X, Y, Z, 1)$ for each set of matching points $m = (u_1, v_1, 1)$ and $m' = (u_2, v_2, 1)$. Suppose $P_{1i}$ and $P_{2i}$ are the $i$th row vector of $P_1$ and $P_2$ respectively. To obtain the 3D spatial coordinate $M$, we have the following equation to perform triangulation for each $m$, $m'$ pair:
 \begin{equation*}
   \left[ {\begin{array}{c}
    P_{13}u_1 - P_{11} \\

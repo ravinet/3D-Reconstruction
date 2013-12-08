@@ -38,9 +38,12 @@
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-In this report, we present a 3D reconstruction technique that uses two uncalibrated images, captured by the same freely moving camera, to construct the 
-final 3D object. Our method uses both SIFT and 
-Harris corner detection as matching feature point detectors to enhance the resulting 3D reconstruction, especially along the edges of the object.  From the matched feature points, we compute the fundamental matrix. Using this, a projective matrix for each input image is obtained, which is used to recover the 3D object. To enhance scaling, we use  Zhang's calibration method which allows camera calibration to happen only once rather than for each input image. We include results from our experiments to show the effectiveness
+In this report, we present a 3D reconstruction method that uses two uncalibrated images to construct the 
+final 3D object. It uses both SIFT and 
+Harris corners to provide a more representative modelling of the object. We found SIFT to 
+miss important features, which can be rectified using Harris corners. We then use these feature points to
+calculate the fundamental matrix.  Moreover, rather than calibrating each image individually, we choose to calibrate the camera
+using Zhang's method so that the calibration only has to happen once. We show results from our experiments to show the effectiveness
 of this method.
 \end{abstract}
 

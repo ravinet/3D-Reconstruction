@@ -6,8 +6,8 @@ in later sections.
 
 \begin{enumerate}
 \item{We find the intrinsic parameters of our camera using Zhang's method.}
-\item{Using SIFT and Harris corner detection, we identify pairs of features points on both images, and we use RANSAC to find the inliers so that we can generate a representative fundamental matrix.}
+\item{Using SIFT and Harris corner detection, we identify pairs of features points from both images, and we use RANSAC to find the inliers so that we can generate a representative fundamental matrix.}
 \item{With the intrinsic parameters of our camera and the fundamental matrix, we can derive the essential matrix.}
-\item{The essential matrix is used to derive the projection matrices of the images which each comprise of a rotation matrix and translation vector. With this information, we can reconstruct the 3D image using triangulation.}
+\item{The essential matrix is used to compute the projective matrices of the input images which each comprise of a rotation matrix and translation vector. }
 \item{With this information, we can reconstruct the 3D image using triangulation.}
 \end{enumerate}
